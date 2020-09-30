@@ -44,10 +44,4 @@
 
 ## External Library
 
-- [HTTP RequestsLibrary (Python)](https://github.com/MarketSquare/robotframework-requests#readme)
-
-    ```sh
-    pip install robotframework-requests
-    ```
-
-- [Keywords Documentation](https://marketsquare.github.io/robotframework-requests/doc/RequestsLibrary.html)
+- [HTTP RequestsLibrary (Python)](/requestsLibrary/README.md)
