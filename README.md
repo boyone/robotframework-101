@@ -13,7 +13,9 @@
 
 ---
 
-## Structure
+## Basic Syntax
+
+### Structure
 
 - Settings
 - Variables
@@ -21,18 +23,22 @@
 - Tasks
 - Keywords
 
-## Variables
+### Variables
 
 - Scalar
 - List
 - Dictionary
 - Environment
 
-## Tagging
+### Tagging
 
-## Command Line Options
+### Command Line Options
 
-## Execution Flow
+- variables + command line parameters
+  - local http, remote https
+- tags + command line options
+
+### Execution Flow
 
 - Suite Setup
 - Test Template
