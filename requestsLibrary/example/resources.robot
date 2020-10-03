@@ -44,7 +44,7 @@ Order Diner Set
     [Arguments]     ${quantity}    ${total_price}
     ${message}=     Replace Variables    ${ORDER_TEMPLATE}
     ${order}=    To json    ${message}
-    ${orderStatus}=     Post Request    ${toy_store}    /api/v1/order    data=${order}    headers=&{POST_HEADERS}
+    ${orderStatus}=     Post Request    ${toy_store}    /api/v1/order    json=${order}    headers=&{POST_HEADERS}
     Status Should Be    200    ${orderStatus}
     Should Be Equal As Strings    ${orderStatus.json()["total_price"]}   ${total_price}
     Set Test Variable    ${order_id}    ${orderStatus.json()["order_id"]}
@@ -53,6 +53,6 @@ Confirm Payment
     [Arguments]     ${total_price}     ${notify_message}
     ${message}=     Replace Variables    ${CONFIRM_PAYMENT_TEMPLATE}
     ${confirmPayment}=    To Json    ${message}
-    ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    data=${confirmPayment}    headers=&{POST_HEADERS}
+    ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    json=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
     Should Be Equal As Strings    ${confirmPaymentStatus.json()["notify_message"]}    ${notify_message}

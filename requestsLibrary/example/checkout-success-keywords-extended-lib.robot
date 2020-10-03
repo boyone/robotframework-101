@@ -39,12 +39,12 @@ Get Product Detail
 
 Order Diner Set
     ${order}=    To json    ${ORDER_TEMPLATE}
-    ${orderStatus}=     Post Request    ${toy_store}    /api/v1/order    data=${order}    headers=&{POST_HEADERS}
+    ${orderStatus}=     Post Request    ${toy_store}    /api/v1/order    json=${order}    headers=&{POST_HEADERS}
     Status Should Be    200    ${orderStatus}
     Should Be Equal As Strings    ${orderStatus.json()["total_price"]}   14.95
 
 Confirm Payment
     ${confirmPayment}=    To Json    ${CONFIRM_PAYMENT_TEMPLATE}
-    ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    data=${confirmPayment}    headers=&{POST_HEADERS}
+    ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    json=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
     Should Be Equal As Strings    ${confirmPaymentStatus.json()["notify_message"]}    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359122 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
