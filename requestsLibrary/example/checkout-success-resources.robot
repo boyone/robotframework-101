@@ -1,8 +1,8 @@
 *** Settings ***
 Library     RequestsLibrary
 Library     Collections
-Test Setup    Create Session    ${toy_store}      ${URL}
-Test Teardown    Delete All Sessions
+Suite Setup    Create Session    ${toy_store}      ${URL}
+Suite Teardown    Delete All Sessions
 Test Template    Checkout Product
 Resource     ./resources.robot
 
