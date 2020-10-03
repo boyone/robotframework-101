@@ -19,7 +19,7 @@ Checkout Diner Set
     Find Product by Name    43 Piece dinner Set
     Get Product Detail    43 Piece dinner Set
     Order Diner Set     1    14.95
-    Confirm Payment     14.95    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359104 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
+    Confirm Payment     14.95    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359122 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
 
 Checkout Bicycle
     Get Product List

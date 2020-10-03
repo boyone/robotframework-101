@@ -15,7 +15,7 @@ ${ORDER_TEMPLATE}       {"cart":[{"product_id": \${product_id},"quantity": \${qu
 ${CONFIRM_PAYMENT_TEMPLATE}    {"order_id": \${order_id},"payment_type": "credit","type": "visa","card_number": "4719700591590995","cvv": "752","expired_month": 7,"expired_year": 20,"card_name": "Karnwat Wongudom","total_price": \${total_price}}
 
 *** Test Cases ***
-Diner Set    43 Piece dinner Set    1    14.95    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359104 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
+Diner Set    43 Piece dinner Set    1    14.95    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359122 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
 Bicycle      Balance Training Bicycle    2    241.90    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359105 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261901
 
 *** Keywords ***

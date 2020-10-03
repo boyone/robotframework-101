@@ -61,4 +61,4 @@ Confirm Payment
     ${confirmPayment}=    To Json    ${message}
     ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    data=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
-    Should Be Equal As Strings    ${confirmPaymentStatus.json()["notify_message"]}    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359104 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
+    Should Be Equal As Strings    ${confirmPaymentStatus.json()["notify_message"]}    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359122 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
