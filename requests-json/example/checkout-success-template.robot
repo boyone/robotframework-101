@@ -82,7 +82,7 @@ Order Product
     ${order}=    To json    ${message}
     ${orderStatus}=     Post Request    ${toy_store}    /api/v1/order    json=${order}    headers=&{POST_HEADERS}
     Status Should Be    200    ${orderStatus}
-    Should Be Equal As Strings    ${orderStatus.json()["total_price"]}   ${total_price}
+    Should Be Equal As Numbers    ${orderStatus.json()["total_price"]}   ${total_price}
     Set Test Variable    ${order_id}    ${orderStatus.json()["order_id"]}
 
 Confirm Payment
