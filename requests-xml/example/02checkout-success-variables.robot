@@ -53,14 +53,14 @@ Checkout Diner Set
     @{products}=    Get Element    ${xml}    products
     Length Should Be	${products}	    2
 
-    ${id}=    Set Variable    0
-    FOR     ${product}    IN     @{products}
-        ${id}=      Get Element Text   ${product}    id
-        ${name}=    Get Element Text    ${product}    product_name
-        Run Keyword If    '${name}' == '43 Piece dinner Set'   Exit For Loop
-        ${id}=      Set Variable    0
-    END
-    Should Be True     ${id} != 0    product id should not equal 0
+    # ${id}=    Set Variable    0
+    # FOR     ${product}    IN     @{products}
+    #     ${id}=      Get Element Text   ${product}    id
+    #     ${name}=    Get Element Text    ${product}    product_name
+    #     Run Keyword If    '${name}' == '43 Piece dinner Set'   Exit For Loop
+    #     ${id}=      Set Variable    0
+    # END
+    # Should Be True     ${id} != 0    product id should not equal 0
 
     ${productDetail}=    Get Request    ${toy_store}    /api/v1/product/${id}    headers=&{ACCEPT}
     Request Should Be Successful    ${productDetail}
