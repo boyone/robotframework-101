@@ -137,8 +137,8 @@ Checkout Diner Set
     &{post_headers}=    Create Dictionary    Accept=application/json    Content-Type=application/json
     ${orderStatus}=    Post Request    toy_store    /api/v1/order    json=${order}    headers=&{post_headers}
     Request Should Be Successful    ${orderStatus}
-    Should Be Equal    ${productDetail.json()["order_id"]}    8004359122
-    Should Be Equal    ${productDetail.json()["total_price"]}    ${14.95}
+    Should Be Equal    ${orderStatus.json()["order_id"]}    8004359122
+    Should Be Equal    ${orderStatus.json()["total_price"]}    ${14.95}
 ```
 
 ### Confirm Payment
