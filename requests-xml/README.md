@@ -181,43 +181,35 @@ Checkout Diner Set
 
 ```robot
 *** Settings ***
-Library     RequestsLibrary
-Library     Collections
+Library    RequestsLibrary
 Library        String
 Library        XML
 
 *** Test Cases ***
 Checkout Diner Set
-    Create Session    toy_store      http://localhost:8000
-    &{accept}=    Create Dictionary    Accept=text/xml
-    ${productList}=   Get Request    toy_store    /api/v1/product    headers=&{accept}
-    Status Should Be  200            ${productList}
+    Create Session   toy_store   http://167.99.77.238:8000
 
-    ${text}=    Decode Bytes To String    ${productList.content}    UTF-8
-    ${xml}    Parse Xml   ${text}
+    &{accept}=   Create Dictionary   Accept=text/xml
+    
+    ${productList}=   Get Request   toy_store   /api/v1/product    headers=&{accept}
+    Status Should Be  200   ${productList}
+
+    # ${text}=    Decode Bytes To String    ${productList.content}    UTF-8
+    ${xml}    Parse Xml   ${productList.content}
     ${total}=    Get Element    ${xml}    total
     Should Be Equal As Integers    ${total.text}     ${2}
     @{products}=    Get Element    ${xml}    products
     Length Should Be	${products}	    2
 
-    ${id}=    Set Variable    0
-    FOR     ${product}    IN     @{products}
-        ${id}=      Get Element Text   ${product}    id
-        ${name}=    Get Element Text    ${product}    product_name
-        Run Keyword If    '${name}' == '43 Piece dinner Set'   Exit For Loop
-        ${id}=      Set Variable    0
-    END
-    Should Be True     ${id} != 0    product id should not equal 0
-
-    ${productDetail}=    Get Request    toy_store    /api/v1/product/${id}    headers=&{ACCEPT}
+    ${productDetail}=    Get Request    toy_store    /api/v1/product/2    headers=&{accept}
     Request Should Be Successful    ${productDetail}
     ${xml}    Parse Xml     ${productDetail.content}
     ${name}=      Get Element Text   ${xml}    product_name
     Should Be Equal     ${name}    43 Piece dinner Set
 
-    ${order}=    Encode String To Bytes    <orders><cart><order><product_id>${id}</product_id><quantity>2</quantity></order></cart><shipping_method>Kerry</shipping_method><shipping_address>405/37 ถ.มหิดล</shipping_address><shipping_sub_district>ท่าศาลา</shipping_sub_district><shipping_district>เมือง</shipping_district><shipping_province>เชียงใหม่</shipping_province><shipping_zip_code>50000</shipping_zip_code><recipient_name>ณัฐญา ชุติบุตร</recipient_name><recipient_phone_number>0970809292</recipient_phone_number></orders>    UTF-8
+    ${order}=    Encode String To Bytes    <orders><cart><order><product_id>2</product_id><quantity>1</quantity></order></cart><shipping_method>Kerry</shipping_method><shipping_address>405/37 ถ.มหิดล</shipping_address><shipping_sub_district>ท่าศาลา</shipping_sub_district><shipping_district>เมือง</shipping_district><shipping_province>เชียงใหม่</shipping_province><shipping_zip_code>50000</shipping_zip_code><recipient_name>ณัฐญา ชุติบุตร</recipient_name><recipient_phone_number>0970809292</recipient_phone_number></orders>    UTF-8
     &{post_headers}=    Create Dictionary    Accept=text/xml    Content-Type=text/xml
-    ${orderStatus}=     Post Request    toy_store    /api/v1/order    data=${order}    headers=&{post_headers}
+    ${orderStatus}=     Post Request    toy_store    /api/v1/order        data=${order}    headers=&{post_headers}
     Status Should Be    200    ${orderStatus}
     ${xml}    Parse Xml    ${orderStatus.content}
     ${total_price}=      Get Element Text   ${xml}    total_price
