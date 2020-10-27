@@ -210,3 +210,66 @@ Checkout Diner Set
     Should Be Equal As Strings    ${confirmPaymentStatus.json()["notify_message"]}    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359122 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
     Delete All Sessions
 ```
+
+## Checkout Diner Set Variables
+
+```robot
+*** Settings ***
+Library     RequestsLibrary
+
+*** Variables ***
+${toy_store}
+${URL}               http://167.99.77.238:8000
+&{accept}            Accept=application/json
+&{content_type}      Content-Type=application/json
+&{post_headers}      &{accept}    &{content_type}
+${ok}                200
+${order_template}    {
+...                    "cart": [{ "product_id": 2, "quantity": 1 }],
+...                    "shipping_method": "Kerry",
+...                    "shipping_address": "405/37 ถ.มหิดล",
+...                    "shipping_sub_district": "ท่าศาลา",
+...                    "shipping_district": "เมือง",
+...                    "shipping_province": "เชียงใหม่",
+...                    "shipping_zip_code": "50000",
+...                    "recipient_name": "ณัฐญา ชุติบุตร",
+...                    "recipient_phone_number": "0970809292"
+...                  }
+${confirm_payment_template}    {
+...                              "order_id": 8004359122,
+...                              "payment_type": "credit",
+...                              "type": "visa",
+...                              "card_number": "4719700591590995",
+...                              "cvv": "752",
+...                              "expired_month": 7,
+...                              "expired_year": 20,
+...                              "card_name": "Karnwat Wongudom",
+...                              "total_price": 14.95
+...                            }
+
+*** Test Cases ***
+Checkout Diner Set
+    Create Session    ${toy_store}    ${URL}
+
+    ${productList}=   Get Request    ${toy_store}    /api/v1/product    headers=&{accept}
+    Status Should Be    ${ok}    ${productList}
+    Should Be Equal   ${productList.json()["total"]}   ${2}
+
+    ${productDetail}=    Get Request    ${toy_store}    /api/v1/product/2    headers=&{accept}
+    Request Should Be Successful    ${productDetail}
+    Should Be Equal    ${productDetail.json()["id"]}    ${2}
+    Should Be Equal    ${productDetail.json()["product_name"]}    43 Piece dinner Set
+    Should Be Equal    ${productDetail.json()["product_price"]}    ${12.95}
+    Should Be Equal    ${productDetail.json()["product_image"]}    /43_Piece_dinner_Set.png
+
+    ${order}=    To Json    ${order_template}
+    ${orderStatus}=    Post Request    ${toy_store}    /api/v1/order    data=${order}    headers=&{post_headers}
+    Request Should Be Successful    ${orderStatus}
+    Should Be Equal As Integers    ${orderStatus.json()["order_id"]}    8004359122
+    Should Be Equal    ${orderStatus.json()["total_price"]}    ${14.95}
+
+    ${confirmPayment}=    To Json    ${confirm_payment_template}
+    ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    json=${confirmPayment}    headers=&{post_headers}
+    Request Should Be Successful    ${confirmPaymentStatus}
+    Should Be Equal As Strings    ${confirmPaymentStatus.json()["notify_message"]}    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359122 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
+```
