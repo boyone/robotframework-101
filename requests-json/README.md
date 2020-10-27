@@ -124,7 +124,7 @@ Checkout Diner Set
 
     &{post_headers}=    Create Dictionary    Accept=application/json    Content-Type=application/json
 
-    ${orderStatus}=    Post Request    ${toy_store}    /api/v1/order    data=${order}    headers=&{post_headers}
+    ${orderStatus}=    Post Request    toy_store    /api/v1/order    data=${order}    headers=&{post_headers}
 ```
 
 #### Assert Order Status
