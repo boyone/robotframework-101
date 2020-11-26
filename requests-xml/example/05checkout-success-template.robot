@@ -44,17 +44,17 @@ ${CONFIRM_PAYMENT_TEMPLATE}
 ...             </confirm-payment>
 
 *** Test Cases ***
-Diner Set    43 Piece dinner Set    1    14.95    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359122 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
-Bicycle      Balance Training Bicycle    2    241.90    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359105 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261901
+Diner Set    43 Piece dinner Set    1    14.95    
+Bicycle      Balance Training Bicycle    2    241.90
 
 *** Keywords ***
 Checkout Product
-    [Arguments]    ${product_name}    ${quantity}    ${total_price}    ${notify_message}
+    [Arguments]    ${product_name}    ${quantity}    ${total_price}    
     Get Product List
     Find Product by Name    ${product_name}
     Get Product Detail     ${product_name}
     Order Product     ${quantity}    ${total_price}
-    Confirm Payment     ${total_price}    ${notify_message}
+    Confirm Payment     ${total_price}
 
 Get Product List
     ${productList}=   Get Request    ${toy_store}    /api/v1/product    headers=&{ACCEPT}
@@ -100,11 +100,15 @@ Order Product
     Set Test Variable    ${order_id}    ${order_id}
 
 Confirm Payment
-    [Arguments]     ${total_price}     ${notify_message}
+    [Arguments]     ${total_price}
     ${payment_message}=     Replace Variables    ${CONFIRM_PAYMENT_TEMPLATE}
     ${confirmPayment}=    Encode String To Bytes    ${payment_message}    UTF-8
     ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    data=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
     ${xml}    Parse Xml    ${confirmPaymentStatus.content}
-    ${message}=      Get Element Text   ${xml}
-    Should Be Equal As Strings    ${message}        ${notify_message}
+    ${payment_date}=      Get Element Text   ${xml}    payment_date
+    Should Match Regexp    ${payment_date}        ^\\d{1,2}/\\d{1,2}/\\d{4} \\d{2}:\\d{2}:\\d{2}$
+    ${actual_order_id}=      Get Element Text   ${xml}    order_id
+    Should Be Equal As Strings    ${actual_order_id}    ${order_id}
+    ${tracking_id}=      Get Element Text   ${xml}    tracking_id
+    Should Match Regexp	   ${tracking_id}    ^\\d{10}$

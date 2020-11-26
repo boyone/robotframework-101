@@ -62,6 +62,7 @@ Checkout Diner Set
     # END
     # Should Be True     ${id} != 0    product id should not equal 0
 
+    ${id}=      Set Variable    2
     ${productDetail}=    Get Request    ${toy_store}    /api/v1/product/${id}    headers=&{ACCEPT}
     Request Should Be Successful    ${productDetail}
     ${xml}    Parse Xml     ${productDetail.content}
@@ -82,5 +83,9 @@ Checkout Diner Set
     ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    data=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
     ${xml}    Parse Xml    ${confirmPaymentStatus.content}
-    ${message}=      Get Element Text   ${xml}
-    Should Be Equal As Strings    ${message}    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359122 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
+    ${payment_date}=      Get Element Text   ${xml}    payment_date
+    Should Match Regexp    ${payment_date}        ^\\d{1,2}/\\d{1,2}/\\d{4} \\d{2}:\\d{2}:\\d{2}$
+    ${actual_order_id}=      Get Element Text   ${xml}    order_id
+    Should Be Equal As Strings    ${actual_order_id}    ${order_id}
+    ${tracking_id}=      Get Element Text   ${xml}    tracking_id
+    Should Match Regexp	   ${tracking_id}    ^\\d{10}$

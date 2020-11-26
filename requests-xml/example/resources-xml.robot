@@ -37,12 +37,12 @@ ${CONFIRM_PAYMENT_TEMPLATE}
 
 *** Keywords ***
 Checkout Product
-    [Arguments]    ${product_name}    ${quantity}    ${total_price}    ${notify_message}
+    [Arguments]    ${product_name}    ${quantity}    ${total_price}
     Get Product List
     Find Product by Name    ${product_name}
     Get Product Detail     ${product_name}
     Order Diner Set     ${quantity}    ${total_price}
-    Confirm Payment     ${total_price}    ${notify_message}
+    Confirm Payment     ${total_price}
 
 Get Product List
     ${resp}=   Get Request    ${toy_store}    /api/v1/product    headers=&{ACCEPT}
@@ -88,11 +88,15 @@ Order Diner Set
     Set Test Variable    ${order_id}    ${order_id}
 
 Confirm Payment
-    [Arguments]     ${total_price}     ${notify_message}
+    [Arguments]     ${total_price}
     ${message}=     Replace Variables    ${CONFIRM_PAYMENT_TEMPLATE}
     ${confirmPayment}=    Encode String To Bytes    ${message}    UTF-8
     ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    data=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
     ${xml}    Parse Xml    ${confirmPaymentStatus.content}
-    ${message}=      Get Element Text   ${xml}
-    Should Be Equal As Strings    ${message}    ${notify_message}
+    ${payment_date}=      Get Element Text   ${xml}    payment_date
+    Should Match Regexp    ${payment_date}        ^\\d{1,2}/\\d{1,2}/\\d{4} \\d{2}:\\d{2}:\\d{2}$
+    ${actual_order_id}=      Get Element Text   ${xml}    order_id
+    Should Be Equal As Strings    ${actual_order_id}    ${order_id}
+    ${tracking_id}=      Get Element Text   ${xml}    tracking_id
+    Should Match Regexp	   ${tracking_id}    ^\\d{10}$

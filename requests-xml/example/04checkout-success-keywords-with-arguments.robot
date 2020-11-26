@@ -48,14 +48,14 @@ Checkout Diner Set
     Find Product by Name    43 Piece dinner Set
     Get Product Detail    43 Piece dinner Set
     Order Diner Set     1    14.95
-    Confirm Payment     14.95    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359122 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
+    Confirm Payment     14.95    
 
 Checkout Bicycle
     Get Product List
     Find Product by Name    Balance Training Bicycle
     Get Product Detail    Balance Training Bicycle
     Order Diner Set    2    241.90
-    Confirm Payment     241.90    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359105 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261901
+    Confirm Payment     241.90
 
 *** Keywords ***
 Get Product List
@@ -102,11 +102,15 @@ Order Diner Set
     Set Test Variable    ${order_id}    ${order_id}
 
 Confirm Payment
-    [Arguments]     ${total_price}     ${notify_message}
+    [Arguments]     ${total_price}     
     ${payment_message}=     Replace Variables    ${CONFIRM_PAYMENT_TEMPLATE}
     ${confirmPayment}=    Encode String To Bytes    ${payment_message}    UTF-8
     ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    data=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
     ${xml}    Parse Xml    ${confirmPaymentStatus.content}
-    ${message}=      Get Element Text   ${xml}
-    Should Be Equal As Strings    ${message}        ${notify_message}
+    ${payment_date}=      Get Element Text   ${xml}    payment_date
+    Should Match Regexp    ${payment_date}        ^\\d{1,2}/\\d{1,2}/\\d{4} \\d{2}:\\d{2}:\\d{2}$
+    ${actual_order_id}=      Get Element Text   ${xml}    order_id
+    Should Be Equal As Strings    ${actual_order_id}    ${order_id}
+    ${tracking_id}=      Get Element Text   ${xml}    tracking_id
+    Should Match Regexp	   ${tracking_id}    ^\\d{10}$

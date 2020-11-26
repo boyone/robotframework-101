@@ -27,13 +27,13 @@ Checkout Diner Set
     # END
     # Should Be True     ${id} != 0    product id should not equal 0
     
-    ${productDetail}=    Get Request    toy_store    /api/v1/product/${id}    headers=&{accept}
+    ${productDetail}=    Get Request    toy_store    /api/v1/product/2    headers=&{accept}
     Request Should Be Successful    ${productDetail}
     ${xml}    Parse Xml     ${productDetail.content}
     ${name}=      Get Element Text   ${xml}    product_name
     Should Be Equal     ${name}    43 Piece dinner Set
 
-    ${order}=    Encode String To Bytes    <orders><cart><order><product_id>${id}</product_id><quantity>2</quantity></order></cart><shipping_method>Kerry</shipping_method><shipping_address>405/37 ถ.มหิดล</shipping_address><shipping_sub_district>ท่าศาลา</shipping_sub_district><shipping_district>เมือง</shipping_district><shipping_province>เชียงใหม่</shipping_province><shipping_zip_code>50000</shipping_zip_code><recipient_name>ณัฐญา ชุติบุตร</recipient_name><recipient_phone_number>0970809292</recipient_phone_number></orders>    UTF-8
+    ${order}=    Encode String To Bytes    <orders><cart><order><product_id>2</product_id><quantity>2</quantity></order></cart><shipping_method>Kerry</shipping_method><shipping_address>405/37 ถ.มหิดล</shipping_address><shipping_sub_district>ท่าศาลา</shipping_sub_district><shipping_district>เมือง</shipping_district><shipping_province>เชียงใหม่</shipping_province><shipping_zip_code>50000</shipping_zip_code><recipient_name>ณัฐญา ชุติบุตร</recipient_name><recipient_phone_number>0970809292</recipient_phone_number></orders>    UTF-8
     &{post_headers}=    Create Dictionary    Accept=text/xml    Content-Type=text/xml
     ${orderStatus}=     Post Request    toy_store    /api/v1/order    data=${order}    headers=&{post_headers}
     Status Should Be    200    ${orderStatus}
@@ -46,5 +46,9 @@ Checkout Diner Set
     ${confirmPaymentStatus}=     Post Request    toy_store    /api/v1/confirmPayment    data=${confirmPayment}    headers=&{post_headers}
     Request Should Be Successful    ${confirmPaymentStatus}
     ${xml}    Parse Xml    ${confirmPaymentStatus.content}
-    ${message}=      Get Element Text   ${xml}
-    Should Be Equal As Strings    ${message}    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ 8004359122 คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
+    ${payment_date}=      Get Element Text   ${xml}    payment_date
+    Should Match Regexp    ${payment_date}        ^\\d{1,2}/\\d{1,2}/\\d{4} \\d{2}:\\d{2}:\\d{2}$
+    ${actual_order_id}=      Get Element Text   ${xml}    order_id
+    Should Be Equal As Strings    ${actual_order_id}    ${order_id}
+    ${tracking_id}=      Get Element Text   ${xml}    tracking_id
+    Should Match Regexp	   ${tracking_id}    ^\\d{10}$
