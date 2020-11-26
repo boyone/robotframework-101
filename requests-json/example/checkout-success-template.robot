@@ -40,17 +40,17 @@ ${CONFIRM_PAYMENT_TEMPLATE}    {
 ...                            }
 
 *** Test Cases ***
-Diner Set    43 Piece dinner Set    1    14.95    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ \${order_id} คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261900
-Bicycle      Balance Training Bicycle    2    241.90    วันเวลาที่ชำระเงิน 1/3/2020 13:30:00 หมายเลขคำสั่งซื้อ \${order_id} คุณสามารถติดตามสินค้าผ่านช่องทาง Kerry หมายเลข 1785261901
+Diner Set    43 Piece dinner Set    1    14.95
+Bicycle      Balance Training Bicycle    2    241.90
 
 *** Keywords ***
 Checkout Product
-    [Arguments]    ${product_name}    ${quantity}    ${total_price}    ${notify_message}
+    [Arguments]    ${product_name}    ${quantity}    ${total_price}
     Get Product List
     Find Product by Name    ${product_name}
     Get Product Detail     ${product_name}
     Order Product     ${quantity}    ${total_price}
-    Confirm Payment     ${total_price}    ${notify_message}
+    Confirm Payment     ${total_price}
 
 Get Product List
     ${productList}=   Get Request    ${toy_store}    /api/v1/product    headers=&{ACCEPT}
@@ -86,10 +86,11 @@ Order Product
     Set Test Variable    ${order_id}    ${orderStatus.json()["order_id"]}
 
 Confirm Payment
-    [Arguments]     ${total_price}     ${notify_message}
-    ${notify_message}=     Replace Variables    ${notify_message}
+    [Arguments]     ${total_price}
     ${message}=     Replace Variables    ${CONFIRM_PAYMENT_TEMPLATE}
     ${confirmPayment}=    To Json    ${message}
     ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    json=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
-    Should Be Equal As Strings    ${confirmPaymentStatus.json()["notify_message"]}    ${notify_message}
+    Should Match Regexp    ${confirmPaymentStatus.json()["payment_date"]}    ^\\d{1,2}/\\d{1,2}/\\d{4} \\d{2}:\\d{2}:\\d{2}$
+    Should Be Equal As Strings    ${confirmPaymentStatus.json()["order_id"]}    ${order_id}
+    Should Match Regexp	   ${confirmPaymentStatus.json()["tracking_id"]}    ^\\d{10}$

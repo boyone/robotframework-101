@@ -68,4 +68,6 @@ Confirm Payment
     ${confirmPayment}=    To Json    ${message}
     ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    json=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
-    Should Be Equal As Strings    ${confirmPaymentStatus.json()["notify_message"]}    ${notify_message}
+    Should Match Regexp    ${confirmPaymentStatus.json()["payment_date"]}    ^\\d{1,2}/\\d{1,2}/\\d{4} \\d{2}:\\d{2}:\\d{2}$
+    Should Be Equal As Strings    ${confirmPaymentStatus.json()["order_id"]}    ${order_id}
+    Should Match Regexp	   ${confirmPaymentStatus.json()["tracking_id"]}    ^\\d{10}$
