@@ -1,10 +1,24 @@
+*** Settings ***
+Library    Collections
+
 *** Variables ***
 @{list}
+&{dict}    1=one    2=two    three=three    ${1}=oneone
 
 *** Test Cases ***
 
 Example Should Be Empty
     Should Be Empty    ${list}
+
+Example Should Not Be Empty
+    Log    ${dict}
+    Should Not Be Empty    ${dict}
+    Should Not Be Empty    ${dict}[1]
+    Dictionary Should Contain Key    ${dict}    1
+    Should Not Be Empty    ${dict.three}
+    Log    ${dict}[1]
+    Log    ${dict}[${1}]
+    
 
 Example Should Be Equal
     Should Be Equal    1    1
