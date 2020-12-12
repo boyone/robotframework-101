@@ -11,13 +11,13 @@ ${URL}      http://localhost:8000
 &{ACCEPT}               Accept=application/json
 &{POST_HEADERS}         &{ACCEPT}    &{CONTENT_TYPE}
 ${ORDER_TEMPLATE}       {"cart":[{"product_id": 2,"quantity": 1}],"shipping_method": "Kerry","shipping_address": "405/37 ถ.มหิดล","shipping_sub_district": "ท่าศาลา","shipping_district": "เมือง","shipping_province": "เชียงใหม่","shipping_zip_code": "50000","recipient_name": "ณัฐญา ชุติบุตร","recipient_phone_number": "0970809292"}
-${CONFIRM_PAYMENT_TEMPLATE}    {"order_id": 8004359122,"payment_type": "credit","type": "visa","card_number": "4719700591590995","cvv": "752","expired_month": 7,"expired_year": 20,"card_name": "Karnwat Wongudom","total_price": 14.95}
+${CONFIRM_PAYMENT_TEMPLATE}    {"order_id": \${order_id},"payment_type": "credit","type": "visa","card_number": "4719700591590995","cvv": "752","expired_month": 7,"expired_year": 20,"card_name": "Karnwat Wongudom","total_price": 14.95}
 
 *** Test Cases ***
 Checkout Diner Set
     Get Product List
     Get Product Detail
-    Order Diner Set
+    Order Product
     Confirm Payment
 
 *** Keywords ***
@@ -41,14 +41,15 @@ Get Product Detail
     Request Should Be Successful    ${productDetail}
     Should Be Equal     ${productDetail.json()["product_name"]}    43 Piece dinner Set
 
-Order Diner Set
+Order Product
     ${order}=    To json    ${ORDER_TEMPLATE}
     ${orderStatus}=     Post Request    ${toy_store}    /api/v1/order    json=${order}    headers=&{POST_HEADERS}
     Status Should Be    200    ${orderStatus}
     Should Be Equal As Strings    ${orderStatus.json()["total_price"]}   14.95
+    Set Test Variable    ${order_id}    ${orderStatus.json()["order_id"]}
 
 Confirm Payment
-    ${confirmPayment}=    To Json    ${CONFIRM_PAYMENT_TEMPLATE}
+    ${confirmPayment}=    Replace Variables    ${CONFIRM_PAYMENT_TEMPLATE}
     ${confirmPaymentStatus}=     Post Request    ${toy_store}    /api/v1/confirmPayment    json=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
     Should Match Regexp    ${confirmPaymentStatus.json()["payment_date"]}    ^\\d{1,2}/\\d{1,2}/\\d{4} \\d{2}:\\d{2}:\\d{2}$
