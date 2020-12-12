@@ -5,3 +5,5 @@ __pycache__
 *.log
 *.html
 output.xml
+
+*.key
