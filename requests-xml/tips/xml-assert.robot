@@ -1,4 +1,5 @@
 *** Settings ***
+Library        Collections
 Library        String
 Library        XML
 
@@ -40,3 +41,11 @@ Test Assert XML
     Should Be Equal As Integers    ${total.text}     ${2}
     @{products}=    Get Element    ${xml}    products
     Length Should Be	${products}	    2
+    ${id}=    Get Element Text    ${products[0]}    id
+    ${name}=    Get Element Text    ${products[1]}    product_name
+
+    ${products_child}=    Get From List    ${products}    0
+    ${id}=    Get Element Text    ${products_child}    id
+
+    ${product}=    Get Element    ${xml}    products/product[1]
+    ${id}=    Get Element Text    ${product}    id
