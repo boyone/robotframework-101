@@ -93,7 +93,7 @@ GO
 - Run Container
 
 ```sh
-docker container run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=myP@ssw0rd' -p 1433:1433 -d --name mssql -h mssql -v `pwd`/init:/usr/src/app/ mcr.microsoft.com/mssql/server:2019-CU12-ubuntu-20.04
+docker container run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=myP@ssw0rd' -p 1433:1433 -d --name mssql -h mssql -v `pwd`/init: -w /usr/src/app/ mcr.microsoft.com/mssql/server:2019-CU12-ubuntu-20.04
 ```
 
 - Create `setup.sql` to Create Database and Tables
