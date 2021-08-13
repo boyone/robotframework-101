@@ -15,7 +15,7 @@ Check Existing Product
 Count Row
     Connect to Database    dbapiModuleName=pymssql    dbName=inventory  dbUsername=sa   dbPassword=myP@ssw0rd     dbHost=localhost     dbPort=1433
     ${row}      Row Count     select id from products
-    Should Be Equal As Integers     8     ${row}
+    Should Be Equal As Integers     9     ${row}
     Disconnect from Database
 
 Query Product

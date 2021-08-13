@@ -12,7 +12,7 @@ Check Existing Product
 
 Count Row
     ${row}      Row Count     select id from products
-    Should Be Equal As Integers     8     ${row}
+    Should Be Equal As Integers     9     ${row}
 
 Query Product
     @{row}      Query     select * from products
