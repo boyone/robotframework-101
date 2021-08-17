@@ -69,10 +69,51 @@ Call Stored Procedure · Check If Exists In Database · Check If Not Exists In D
 - Teardown
 
 ```robot
+*** Settings ***
+Library     DatabaseLibrary # Setup
 
-Library     DatabaseLibrary
-
+*** Test Cases ***
+Check Existing Product
+    Connect to Database    dbapiModuleName=pymssql    dbName=inventory  dbUsername=sa   dbPassword=myP@ssw0rd     dbHost=localhost     dbPort=1433  # Setup
+    Check if exists in Database     select id from products where name= 'Scooter' # Action, Verify
+    Disconnect from Database # Teardown
 ```
+
+### Run robot
+
+```sh
+robot <filename>.robot
+```
+
+- example
+
+  ```sh
+  robot inventory-pymssql.robot
+  ```
+
+### Run robot with `variables`
+
+```sh
+robot -v <variable-name>:<value> <filename>.robot
+```
+
+- example
+
+  ```sh
+  robot -v DB_HOST:localhost -v DB_PORT:1433 inventory-pymssql-variables.robot
+  ```
+
+### Run robot with `tags`
+
+```sh
+robot --include <tag-name> <filename>.robot
+```
+
+- example
+
+  ```sh
+  robot --include smoke-testing inventory-pymssql-tags.robot
+  ```
 
 ## 3 A Structure
 
