@@ -19,7 +19,7 @@ lazy-object-proxy==1.4.3
 lxml==4.6.2
 mccabe==0.6.1
 pycodestyle==2.6.0
-Pygments==2.7.2
+Pygments==2.7.4
 pylint==2.6.0
 PyMySQL==0.10.1
 PyQt5==5.15.1
